@@ -10,7 +10,11 @@ interface AudioPlayerProps {
   className?: string;
 }
 
-export function AudioPlayer({ src, autoPlay = false, className }: AudioPlayerProps) {
+export function AudioPlayer({
+  src,
+  autoPlay = false,
+  className,
+}: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -28,12 +32,19 @@ export function AudioPlayer({ src, autoPlay = false, className }: AudioPlayerPro
     audio.addEventListener("loadedmetadata", updateDuration);
     audio.addEventListener("ended", handleEnded);
 
+    // Auto-Play wenn autoPlay prop gesetzt ist
+    if (autoPlay) {
+      audio.play().catch(() => {
+        // Ignoriere Fehler beim Auto-Play (Browser-Beschränkungen)
+      });
+    }
+
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
       audio.removeEventListener("ended", handleEnded);
     };
-  }, []);
+  }, [autoPlay]);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -55,8 +66,13 @@ export function AudioPlayer({ src, autoPlay = false, className }: AudioPlayerPro
   };
 
   return (
-    <div className={cn("flex items-center gap-4 p-4 bg-gray-50 rounded-lg", className)}>
-      <audio ref={audioRef} src={src} preload="metadata" />
+    <div
+      className={cn(
+        "flex items-center gap-4 p-4 bg-gray-50 rounded-lg",
+        className
+      )}
+    >
+      <audio ref={audioRef} src={src} preload="metadata" autoPlay={autoPlay} />
 
       <Button
         onClick={togglePlayPause}
@@ -65,19 +81,11 @@ export function AudioPlayer({ src, autoPlay = false, className }: AudioPlayerPro
         className="w-12 h-12 rounded-full"
       >
         {isPlaying ? (
-          <svg
-            className="w-6 h-6"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
             <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
           </svg>
         ) : (
-          <svg
-            className="w-6 h-6"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />
           </svg>
         )}
@@ -88,7 +96,7 @@ export function AudioPlayer({ src, autoPlay = false, className }: AudioPlayerPro
           <div
             className="bg-blue-600 h-2 rounded-full transition-all"
             style={{
-              width: duration > 0 ? `${(currentTime / duration) * 100}%` : "0%"
+              width: duration > 0 ? `${(currentTime / duration) * 100}%` : "0%",
             }}
           />
         </div>
@@ -100,4 +108,3 @@ export function AudioPlayer({ src, autoPlay = false, className }: AudioPlayerPro
     </div>
   );
 }
-

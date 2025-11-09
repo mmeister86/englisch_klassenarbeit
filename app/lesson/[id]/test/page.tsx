@@ -11,20 +11,32 @@ import { ExerciseWrapper } from "@/components/exercises/ExerciseWrapper";
 import { ProgressBar } from "@/components/ProgressBar";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import { AudioPlayer } from "@/components/AudioPlayer";
-import { updateLessonProgress, saveScore } from "@/lib/storage";
+import { saveScore } from "@/lib/storage";
 import { Progress, Score } from "@/lib/types";
 
 export default function TestPage() {
   const router = useRouter();
   const params = useParams();
   const lessonId = params.id as string;
-  const { user, isLoading, updateLessonProgress: updateProgress, saveScore: saveScoreToContext } = useProgress();
+  const {
+    user,
+    isLoading,
+    updateLessonProgress: updateProgress,
+    saveScore: saveScoreToContext,
+  } = useProgress();
   const lesson = getLessonById(lessonId);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [scores, setScores] = useState<boolean[]>([]);
   const [completed, setCompleted] = useState(false);
-  const [answers, setAnswers] = useState<Array<{ questionId: string; isCorrect: boolean; userAnswer: string; correctAnswer: string }>>([]);
+  const [answers, setAnswers] = useState<
+    Array<{
+      questionId: string;
+      isCorrect: boolean;
+      userAnswer: string;
+      correctAnswer: string;
+    }>
+  >([]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -52,8 +64,11 @@ export default function TestPage() {
     setScores(newScores);
 
     // Speichere Antwort-Details
-    const correctAnswer = currentQuestion.answers.find(a => a.isCorrect)?.text || "";
-    const userAnswer = currentQuestion.answers.find(a => !a.isCorrect && !isCorrect)?.text || correctAnswer;
+    const correctAnswer =
+      currentQuestion.answers.find((a) => a.isCorrect)?.text || "";
+    const userAnswer =
+      currentQuestion.answers.find((a) => !a.isCorrect && !isCorrect)?.text ||
+      correctAnswer;
 
     setAnswers([
       ...answers,
@@ -61,8 +76,8 @@ export default function TestPage() {
         questionId: currentQuestion.id,
         isCorrect,
         userAnswer,
-        correctAnswer
-      }
+        correctAnswer,
+      },
     ]);
 
     // Warte kurz, dann zur nächsten Frage
@@ -92,7 +107,7 @@ export default function TestPage() {
       maxScore,
       percentage,
       timestamp: new Date().toISOString(),
-      answers
+      answers,
     };
     saveScoreToContext(score);
     saveScore(score);
@@ -104,19 +119,22 @@ export default function TestPage() {
       score: correctAnswers,
       maxScore,
       completedAt: isCompleted ? new Date().toISOString() : undefined,
-      attempts: 1
+      attempts: 1,
     };
     updateProgress(lesson.id, progress);
   };
 
   const correctAnswers = scores.filter(Boolean).length;
   const totalQuestions = questions.length;
-  const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+  const percentage =
+    totalQuestions > 0
+      ? Math.round((correctAnswers / totalQuestions) * 100)
+      : 0;
   const isPassing = percentage >= lesson.minScore;
 
   if (completed) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 p-8">
         <div className="max-w-4xl mx-auto">
           <ScoreDisplay
             score={correctAnswers}
@@ -135,13 +153,15 @@ export default function TestPage() {
                     Glückwunsch! Du hast den Test bestanden. 🎉
                   </p>
                   <p className="text-gray-600">
-                    Du kannst jetzt zur nächsten Lerneinheit übergehen oder diese noch einmal wiederholen.
+                    Du kannst jetzt zur nächsten Lerneinheit übergehen oder
+                    diese noch einmal wiederholen.
                   </p>
                 </div>
               ) : (
                 <div>
                   <p className="text-lg text-red-700 mb-4">
-                    Du hast {percentage}% erreicht. Um zu bestehen, benötigst du mindestens {lesson.minScore}%.
+                    Du hast {percentage}% erreicht. Um zu bestehen, benötigst du
+                    mindestens {lesson.minScore}%.
                   </p>
                   <p className="text-gray-600">
                     Versuche es noch einmal! Du schaffst das! 💪
@@ -171,7 +191,7 @@ export default function TestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <Link

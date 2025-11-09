@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import {
   DndContext,
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
   useDraggable,
-  useDroppable
+  useDroppable,
 } from "@dnd-kit/core";
 import { Question, FeedbackMessage } from "@/lib/types";
 import { FeedbackMessage as FeedbackMessageComponent } from "@/components/FeedbackMessage";
@@ -23,7 +24,7 @@ function DraggableItem({
   id,
   text,
   isUsed,
-  disabled
+  disabled,
 }: {
   id: string;
   text: string;
@@ -33,12 +34,12 @@ function DraggableItem({
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id,
-      disabled: isUsed || disabled
+      disabled: isUsed || disabled,
     });
 
   const style = transform
     ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
       }
     : undefined;
 
@@ -63,7 +64,7 @@ function DroppableArea({
   id,
   children,
   isCorrect,
-  isFilled
+  isFilled,
 }: {
   id: string;
   children: React.ReactNode;
@@ -71,7 +72,7 @@ function DroppableArea({
   isFilled?: boolean;
 }) {
   const { setNodeRef, isOver } = useDroppable({
-    id
+    id,
   });
 
   return (
@@ -95,7 +96,7 @@ function DroppableArea({
 export function ImageMatchingExercise({
   question,
   onAnswer,
-  disabled = false
+  disabled = false,
 }: ImageMatchingExerciseProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -142,8 +143,13 @@ export function ImageMatchingExercise({
       type: isCorrect ? "success" : "error",
       message:
         answer?.feedback ||
-        (isCorrect ? "Richtig!" : "Falsch, das passende Pronomen wäre: " + imageMatchingQuestion.correctOption),
-      correctAnswer: isCorrect ? undefined : imageMatchingQuestion.correctOption
+        (isCorrect
+          ? "Richtig!"
+          : "Falsch, das passende Pronomen wäre: " +
+            imageMatchingQuestion.correctOption),
+      correctAnswer: isCorrect
+        ? undefined
+        : imageMatchingQuestion.correctOption,
     });
 
     onAnswer(isCorrect);
@@ -181,9 +187,11 @@ export function ImageMatchingExercise({
                     </span>
                   </div>
                   {imageMatchingQuestion.imageUrl && (
-                    <img
+                    <Image
                       src={imageMatchingQuestion.imageUrl}
                       alt="Match"
+                      width={128}
+                      height={128}
                       className="w-32 h-32 object-contain"
                       onError={(e) => {
                         // Fallback wenn Bild nicht geladen werden kann
@@ -195,11 +203,14 @@ export function ImageMatchingExercise({
               ) : (
                 <div className="text-center">
                   {imageMatchingQuestion.imageUrl ? (
-                    <img
+                    <Image
                       src={imageMatchingQuestion.imageUrl}
                       alt="Match"
+                      width={128}
+                      height={128}
                       className="w-32 h-32 object-contain opacity-50"
                       onError={(e) => {
+                        // Fallback wenn Bild nicht geladen werden kann
                         e.currentTarget.style.display = "none";
                       }}
                     />

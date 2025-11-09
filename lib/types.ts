@@ -58,12 +58,19 @@ export interface ImageMatchingQuestion extends Question {
   correctOption: string;
 }
 
+// Union-Typ für alle spezifischen Frage-Typen
+export type SpecificQuestion =
+  | DragDropQuestion
+  | MultipleChoiceQuestion
+  | FillBlankQuestion
+  | ImageMatchingQuestion;
+
 export interface Exercise {
   id: string;
   type: ExerciseType;
   title: string;
   description?: string;
-  questions: Question[];
+  questions: SpecificQuestion[];
   instructions?: string;
 }
 
@@ -122,5 +129,3 @@ export interface FeedbackMessage {
   message: string;
   correctAnswer?: string;
 }
-
-

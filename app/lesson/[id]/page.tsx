@@ -5,7 +5,12 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useProgress } from "@/contexts/ProgressContext";
 import { getLessonById } from "@/data/lessons";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function LessonPage() {
   const router = useRouter();
@@ -45,30 +50,30 @@ export default function LessonPage() {
       id: "introduction",
       title: "Einführung",
       description: "Lerne die Grundlagen",
-      href: `/lesson/${lessonId}/introduction`
+      href: `/lesson/${lessonId}/introduction`,
     },
     {
       id: "exercise",
       title: "Übung",
       description: "Drag & Drop Übung",
-      href: `/lesson/${lessonId}/exercise`
+      href: `/lesson/${lessonId}/exercise`,
     },
     {
       id: "test",
       title: "Test",
       description: "Zeige was du gelernt hast",
-      href: `/lesson/${lessonId}/test`
+      href: `/lesson/${lessonId}/test`,
     },
     {
       id: "result",
       title: "Ergebnis",
       description: "Sieh dein Ergebnis",
-      href: `/lesson/${lessonId}/result`
-    }
+      href: `/lesson/${lessonId}/result`,
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <Link
@@ -89,7 +94,7 @@ export default function LessonPage() {
               <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader>
                   <div className="flex items-center gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xl">
+                    <div className="shrink-0 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xl">
                       {index + 1}
                     </div>
                     <div className="flex-1">
@@ -107,5 +112,3 @@ export default function LessonPage() {
     </div>
   );
 }
-
-

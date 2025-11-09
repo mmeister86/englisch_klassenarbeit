@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 
 export default function CertificatePage() {
   const router = useRouter();
-  const { user, progress, isLoading } = useProgress();
+  const { user, isLoading } = useProgress();
   const certificateRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -79,7 +79,11 @@ export default function CertificatePage() {
     // Text
     ctx.fillStyle = "#1e293b";
     ctx.font = "28px Arial";
-    ctx.fillText("alle Lerneinheiten erfolgreich abgeschlossen hat.", canvas.width / 2, 500);
+    ctx.fillText(
+      "alle Lerneinheiten erfolgreich abgeschlossen hat.",
+      canvas.width / 2,
+      500
+    );
 
     // Datum
     ctx.fillStyle = "#64748b";
@@ -87,7 +91,7 @@ export default function CertificatePage() {
     const date = new Date().toLocaleDateString("de-DE", {
       year: "numeric",
       month: "long",
-      day: "numeric"
+      day: "numeric",
     });
     ctx.fillText(date, canvas.width / 2, 650);
 
@@ -106,7 +110,7 @@ export default function CertificatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <Link
@@ -124,7 +128,7 @@ export default function CertificatePage() {
           <CardContent className="space-y-6">
             <div
               ref={certificateRef}
-              className="bg-gradient-to-br from-blue-50 to-indigo-50 border-4 border-blue-600 rounded-lg p-12 text-center"
+              className="bg-linear-to-br from-blue-50 to-indigo-50 border-4 border-blue-600 rounded-lg p-12 text-center"
             >
               <h1 className="text-4xl font-bold text-blue-900 mb-4">
                 ZERTIFIKAT
@@ -141,11 +145,13 @@ export default function CertificatePage() {
                 alle Lerneinheiten erfolgreich abgeschlossen hat.
               </p>
               <div className="mt-12 text-gray-600">
-                <p>{new Date().toLocaleDateString("de-DE", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric"
-                })}</p>
+                <p>
+                  {new Date().toLocaleDateString("de-DE", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
               </div>
             </div>
 
@@ -163,4 +169,3 @@ export default function CertificatePage() {
     </div>
   );
 }
-
