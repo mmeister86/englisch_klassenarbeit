@@ -135,6 +135,7 @@ export default function ExercisePage() {
               <ExerciseWrapper
                 question={currentQuestion}
                 onAnswer={handleAnswer}
+                lessonId={lessonId}
               />
             </div>
           </CardContent>
