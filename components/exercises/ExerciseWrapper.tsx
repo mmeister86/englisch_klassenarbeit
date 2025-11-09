@@ -54,3 +54,4 @@ export function ExerciseWrapper({
       return <div>Unbekannter Übungstyp</div>;
   }
 }
+

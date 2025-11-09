@@ -100,3 +100,4 @@ export function AudioPlayer({ src, autoPlay = false, className }: AudioPlayerPro
     </div>
   );
 }
+

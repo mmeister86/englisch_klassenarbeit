@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -107,6 +107,13 @@ export function ImageMatchingExercise({
     options: string[];
     correctOption: string;
   };
+
+  // Reset state when question changes
+  useEffect(() => {
+    setSelectedOption(null);
+    setFeedback(null);
+    setActiveId(null);
+  }, [question.id]);
 
   const handleDragStart = (event: DragStartEvent) => {
     if (disabled) return;

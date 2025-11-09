@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Question, FeedbackMessage } from "@/lib/types";
 import { FeedbackMessage as FeedbackMessageComponent } from "@/components/FeedbackMessage";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ interface MultipleChoiceExerciseProps {
 export function MultipleChoiceExercise({
   question,
   onAnswer,
-  disabled = false
+  disabled = false,
 }: MultipleChoiceExerciseProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
@@ -26,6 +26,13 @@ export function MultipleChoiceExercise({
     options: string[];
     correctOptionIndex: number;
   };
+
+  // Reset state when question changes
+  useEffect(() => {
+    setSelectedIndex(null);
+    setFeedback(null);
+    setAnswered(false);
+  }, [question.id]);
 
   const handleSelect = (index: number) => {
     if (disabled || answered) return;
@@ -41,14 +48,12 @@ export function MultipleChoiceExercise({
 
     setFeedback({
       type: isCorrect ? "success" : "error",
-      message:
-        answer?.feedback ||
-        (isCorrect ? "Richtig!" : "Leider falsch"),
+      message: answer?.feedback || (isCorrect ? "Richtig!" : "Leider falsch"),
       correctAnswer: isCorrect
         ? undefined
         : multipleChoiceQuestion.options[
             multipleChoiceQuestion.correctOptionIndex
-          ]
+          ],
     });
 
     onAnswer(isCorrect);
@@ -92,9 +97,7 @@ export function MultipleChoiceExercise({
                 {String.fromCharCode(65 + index)}.
               </span>
               {option}
-              {showResult && isCorrect && (
-                <span className="ml-auto">✓</span>
-              )}
+              {showResult && isCorrect && <span className="ml-auto">✓</span>}
               {showResult && isSelected && !isCorrect && (
                 <span className="ml-auto">✗</span>
               )}

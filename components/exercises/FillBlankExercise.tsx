@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -112,6 +112,13 @@ export function FillBlankExercise({
       options: string[];
     }>;
   };
+
+  // Reset state when question changes
+  useEffect(() => {
+    setSelectedAnswers({});
+    setFeedback(null);
+    setActiveId(null);
+  }, [question.id]);
 
   const handleDragStart = (event: DragStartEvent) => {
     if (disabled) return;
