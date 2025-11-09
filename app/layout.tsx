@@ -28,6 +28,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script
+          defer
+          src="https://umami.matthias.lol/script.js"
+          data-website-id="41a02324-9d86-43d4-9974-9464d35f6940"
+        ></script>
         <ProgressProvider>{children}</ProgressProvider>
       </body>
     </html>
