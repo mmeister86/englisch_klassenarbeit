@@ -11,6 +11,7 @@ import { ExerciseWrapper } from "@/components/exercises/ExerciseWrapper";
 import { ProgressBar } from "@/components/ProgressBar";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import { Question } from "@/lib/types";
+import { shuffleMultipleChoiceQuestion } from "@/lib/utils";
 
 export default function FinalQuizPage() {
   const router = useRouter();
@@ -27,11 +28,23 @@ export default function FinalQuizPage() {
     lessons.forEach((lesson) => {
       // Füge Fragen aus Exercise hinzu
       lesson.exercise.questions.forEach((q) => {
-        questions.push({ ...q, id: `exercise-${lesson.id}-${q.id}` });
+        const question = { ...q, id: `exercise-${lesson.id}-${q.id}` };
+        // Randomisiere Multiple-Choice-Fragen
+        if (question.type === "multiple-choice") {
+          questions.push(shuffleMultipleChoiceQuestion(question));
+        } else {
+          questions.push(question);
+        }
       });
       // Füge Fragen aus Test hinzu
       lesson.test.questions.forEach((q) => {
-        questions.push({ ...q, id: `test-${lesson.id}-${q.id}` });
+        const question = { ...q, id: `test-${lesson.id}-${q.id}` };
+        // Randomisiere Multiple-Choice-Fragen
+        if (question.type === "multiple-choice") {
+          questions.push(shuffleMultipleChoiceQuestion(question));
+        } else {
+          questions.push(question);
+        }
       });
     });
     // Mische die Fragen zufällig
@@ -180,4 +193,3 @@ export default function FinalQuizPage() {
     </div>
   );
 }
-

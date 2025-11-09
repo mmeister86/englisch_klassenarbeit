@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useProgress } from "@/contexts/ProgressContext";
@@ -13,6 +13,7 @@ import { ScoreDisplay } from "@/components/ScoreDisplay";
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { saveScore } from "@/lib/storage";
 import { Progress, Score } from "@/lib/types";
+import { shuffleMultipleChoiceQuestion } from "@/lib/utils";
 
 export default function TestPage() {
   const router = useRouter();
@@ -38,6 +39,17 @@ export default function TestPage() {
     }>
   >([]);
 
+  // Randomisiere Multiple-Choice-Fragen beim Laden (muss vor frühen Returns sein)
+  const questions = useMemo(() => {
+    if (!lesson) return [];
+    return lesson.test.questions.map((question) => {
+      if (question.type === "multiple-choice") {
+        return shuffleMultipleChoiceQuestion(question);
+      }
+      return question;
+    });
+  }, [lesson]);
+
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/welcome");
@@ -56,7 +68,6 @@ export default function TestPage() {
     return null;
   }
 
-  const questions = lesson.test.questions;
   const currentQuestion = questions[currentQuestionIndex];
 
   const handleAnswer = (isCorrect: boolean) => {
