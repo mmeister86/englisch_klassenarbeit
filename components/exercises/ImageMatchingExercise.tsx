@@ -79,7 +79,7 @@ function DroppableArea({
     <div
       ref={setNodeRef}
       className={cn(
-        "min-h-[120px] min-w-[200px] border-2 border-dashed rounded-lg flex items-center justify-center transition-colors",
+        "min-h-[450px] min-w-[450px] border-2 border-dashed rounded-lg flex items-center justify-center transition-colors",
         isOver && "border-blue-500 bg-blue-50",
         isFilled &&
           (isCorrect
@@ -190,9 +190,9 @@ export function ImageMatchingExercise({
                     <Image
                       src={imageMatchingQuestion.imageUrl}
                       alt="Match"
-                      width={128}
-                      height={128}
-                      className="w-32 h-32 object-contain"
+                      width={400}
+                      height={400}
+                      className="w-[400px] h-[400px] object-contain"
                       onError={(e) => {
                         // Fallback wenn Bild nicht geladen werden kann
                         e.currentTarget.style.display = "none";
@@ -206,16 +206,16 @@ export function ImageMatchingExercise({
                     <Image
                       src={imageMatchingQuestion.imageUrl}
                       alt="Match"
-                      width={128}
-                      height={128}
-                      className="w-32 h-32 object-contain opacity-50"
+                      width={400}
+                      height={400}
+                      className="w-[400px] h-[400px] object-contain opacity-50"
                       onError={(e) => {
                         // Fallback wenn Bild nicht geladen werden kann
                         e.currentTarget.style.display = "none";
                       }}
                     />
                   ) : (
-                    <div className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
+                    <div className="w-[400px] h-[400px] bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
                       Bild
                     </div>
                   )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +18,9 @@ export function AudioPlayer({
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -65,6 +67,90 @@ export function AudioPlayer({
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const calculateTimeFromPosition = useCallback(
+    (clientX: number): number => {
+      const progressBar = progressBarRef.current;
+      const audio = audioRef.current;
+      if (!progressBar || !audio || !duration) return 0;
+
+      const rect = progressBar.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const percentage = Math.max(0, Math.min(1, x / rect.width));
+      return percentage * duration;
+    },
+    [duration]
+  );
+
+  const setAudioTime = useCallback((newTime: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.currentTime = newTime;
+    setCurrentTime(newTime);
+  }, []);
+
+  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!duration) return;
+    const newTime = calculateTimeFromPosition(e.clientX);
+    setAudioTime(newTime);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    if (!duration) return;
+    const newTime = calculateTimeFromPosition(e.clientX);
+    setAudioTime(newTime);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    if (!duration) return;
+    const touch = e.touches[0];
+    const newTime = calculateTimeFromPosition(touch.clientX);
+    setAudioTime(newTime);
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !duration) return;
+      const newTime = calculateTimeFromPosition(e.clientX);
+      if (newTime > 0) {
+        setAudioTime(newTime);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isDragging || !duration) return;
+      const touch = e.touches[0];
+      if (!touch) return;
+      const newTime = calculateTimeFromPosition(touch.clientX);
+      if (newTime > 0) {
+        setAudioTime(newTime);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("touchmove", handleTouchMove);
+      document.addEventListener("touchend", handleTouchEnd);
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [isDragging, duration, calculateTimeFromPosition, setAudioTime]);
+
   return (
     <div
       className={cn(
@@ -92,9 +178,21 @@ export function AudioPlayer({
       </Button>
 
       <div className="flex-1">
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-1">
+        <div
+          ref={progressBarRef}
+          className={cn(
+            "w-full bg-gray-200 rounded-full h-2 mb-1 cursor-pointer relative group",
+            isDragging && "cursor-grabbing"
+          )}
+          onClick={handleProgressClick}
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+        >
           <div
-            className="bg-blue-600 h-2 rounded-full transition-all"
+            className={cn(
+              "bg-blue-600 h-2 rounded-full transition-all",
+              isDragging && "transition-none"
+            )}
             style={{
               width: duration > 0 ? `${(currentTime / duration) * 100}%` : "0%",
             }}
